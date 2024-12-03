@@ -4,12 +4,12 @@
 1. [Install Node.js](https://nodejs.org/en/download/package-manager)
 1. Clone this repo
 1. Place the provided `.env` file in `restaurant-app/node-postgress/backend`
-1. Open a terminal to `restaurant-app/node-postgress/backend` and run
+1. Open a terminal to `restaurant-app/node-postgress/backend` and run:
     ```
     npm i
     node index
     ```
-1. Open another terminal to `restaurant-app/node-postgress/frontend` and run
+1. Open another terminal to `restaurant-app/node-postgress/frontend` and run:
     ```
     npm i
     npm run dev
@@ -18,9 +18,10 @@
 
 ## Developing
 ### Backend
+- The backend is a server that interacts with the remote database.
 - `restaurant-app/node-postgress/backend/userModel.js` and `restaurant-app/node-postgress/backend/index.js` have functions that can interact with the database.
 - http://localhost:3001/ opens the backend in your browser, which currently shows the list of Users.
-- To reload the backend after making changes, go to your backend terminal that shows `App running on port 3001`  and `Ctrl+C`, `Up Arrow`, `Enter`
+- To reload the backend after making changes, go to your backend terminal that shows `App running on port 3001`  and `Ctrl+C`, `Up Arrow`, `Enter`.
 ### Frontend
-- `restaurant-app/node-postgress/frontend/src/App.jsx` is the app that calls the backend server functions.
+- `restaurant-app/node-postgress/frontend/src/App.jsx` is the frontend app that calls the backend  functions.
 - To reload the frontend after making changes, go to your frontend `VITE` terminal and `Ctrl+C`, `Up Arrow`, `Enter`
