@@ -1,0 +1,12 @@
+{
+  "name": "node-postgres",
+  "version": "1.0.0",
+  "description": "NodeJS and Express can interact with PostgreSQL",
+  "main": "index.js",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.1",
+    "pg": "^8.13.1"
+  }
+}
