@@ -55,6 +55,16 @@ app.put("/Users/:user_id", (req, res) => {
     });
 });
 
+app.post('/Reviews', (req, res) => {
+  user_model.addReview(req.body)
+  .then(response => {
+    res.status(200).send(response);
+  })
+  .catch(error => {
+    res.status(500).send(error);
+  })
+});
+
 app.listen(port, () => {
   console.log(`App running on port ${port}.`)
 })
