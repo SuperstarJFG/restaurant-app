@@ -72,24 +72,24 @@ function App() {
   function addReview() {
     let username = prompt('Enter username');
     let pass = prompt('Enter password');
-    let rating = prompt('Enter rating');
-    let text = prompt('Enter review text');
-    let review_date = prompt('Enter review date');
-    let business_name = prompt('Enter business name');
-    let photo_url = prompt('Enter photo URL');
-    fetch('http://localhost:3001/Reviews', {
-      method: 'POST',
+    fetch('http://localhost:3001/LogIn', {
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ username, pass, rating, text, review_date, business_name, photo_url }),
+      body: JSON.stringify({ username, pass }),
     })
-      .then(response => {
-        return response.text();
-      })
-      .then(data => {
-        alert(data);
-      });
+    .then(response => {
+      return response.text();
+    })
+    .then(data => {
+      alert(data);
+    });
+    // let rating = prompt('Enter rating');
+    // let text = prompt('Enter review text');
+    // let review_date = prompt('Enter review date');
+    // let business_name = prompt('Enter business name');
+    // let photo_url = prompt('Enter photo URL');
   }
 
   useEffect(() => {

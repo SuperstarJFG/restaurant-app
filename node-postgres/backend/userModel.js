@@ -29,6 +29,28 @@ const getUsers = async () => {
   }
 };
 
+// return if there is a match for a login
+const checkLogin = async (username, pass) => {
+  try {
+    return await new Promise(function (resolve, reject) {
+      const { username, pass } = body;
+      pool.query("SELECT * FROM Users where username = $1 AND pass = $2", [username, pass], (error, results) => {
+        if (error) {
+          reject(error);
+        }
+        if (results && results.rows) {
+          resolve(results.rows);
+        } else {
+          reject(new Error("No results found"));
+        }
+      });
+    });
+  } catch (error_1) {
+    console.error(error_1);
+    throw new Error("Internal server error");
+  }
+};
+
 // create a new Users record in the databsse
 const createUser = (body) => {
   return new Promise(function (resolve, reject) {
@@ -57,13 +79,13 @@ const createUser = (body) => {
 const deleteUser = (user_id) => {
   return new Promise(function (resolve, reject) {
     pool.query(
-      "DELETE FROM Users WHERE user_id = $1",
+      "DELETE FROM Users WHERE user_id = $1 RETURNING *",
       [user_id],
       (error, results) => {
         if (error) {
           reject(error);
         }
-        resolve(`User deleted with user_id: ${user_id}`);
+        resolve(`User deleted with user_id: ${user_id}, error: ${error}, results: ${results}`);
       }
     );
   });
@@ -100,45 +122,48 @@ const addReview = (body) => {
       [username, pass],
       (error, userResults) => {
         if (error) {
+          resolve("User not found");
           return reject(error);
         }
         if (userResults.rows.length === 0) {
+          resolve("User not found");
           return reject(new Error("Invalid username or password"));
         }
+        resolve("User found");
 
-        pool.query(
-          "SELECT * FROM Businesses WHERE name = $1",
-          [business_name],
-          (error, businessResults) => {
-            if (error) {
-              return reject(error);
-            }
-            if (businessResults.rows.length === 0) {
-              return reject(new Error("Business not found"));
-            }
+      //   pool.query(
+      //     "SELECT * FROM Businesses WHERE business_name = $1",
+      //     [business_name],
+      //     (error, businessResults) => {
+      //       if (error) {
+      //         return reject(error);
+      //       }
+      //       if (businessResults.rows.length === 0) {
+      //         return reject(new Error("Business not found"));
+      //       }
 
-            pool.query(
-              "INSERT INTO Reviews (rating, text, review_date) VALUES ($1, $2, $3) RETURNING *",
-              [rating, text, review_date, business_name],
-              (error, reviewResults) => {
-                if (error) {
-                  return reject(error);
-                }
+      //       pool.query(
+      //         "INSERT INTO Reviews (rating, text, review_date) VALUES ($1, $2, $3) RETURNING *",
+      //         [rating, text, review_date, business_name],
+      //         (error, reviewResults) => {
+      //           if (error) {
+      //             return reject(error);
+      //           }
 
-                pool.query(
-                  "UPDATE Users SET restaurants_visited = restaurants_visited + 1 WHERE username = $1",
-                  [username],
-                  (error) => {
-                    if (error) {
-                      return reject(error);
-                    }
-                    resolve("Thank you for leaving a review!");
-                  }
-                );
-              }
-            );
-          }
-        );
+      //           pool.query(
+      //             "UPDATE Users SET restaurants_visited = restaurants_visited + 1 WHERE username = $1",
+      //             [username],
+      //             (error) => {
+      //               if (error) {
+      //                 return reject(error);
+      //               }
+      //               resolve("Thank you for leaving a review!");
+      //             }
+      //           );
+      //         }
+      //       );
+      //     }
+      //   );
       }
     );
   });
@@ -147,6 +172,7 @@ const addReview = (body) => {
 
 module.exports = {
   getUsers,
+  checkLogin,
   createUser,
   deleteUser,
   updateUser,

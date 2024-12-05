@@ -55,8 +55,8 @@ app.put("/Users/:user_id", (req, res) => {
     });
 });
 
-app.post('/Reviews', (req, res) => {
-  user_model.addReview(req.body)
+app.get('/LogIn', (req, res) => {
+  user_model.checkLogin(req.body)
   .then(response => {
     res.status(200).send(response);
   })
