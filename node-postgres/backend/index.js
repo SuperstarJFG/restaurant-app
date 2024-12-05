@@ -62,6 +62,16 @@ app.post('/Business', (req, res) => {
   })
 });
 
+app.post('/Recommendations', (req, res) => {
+  user_model.getRecommendations(req.body)
+  .then(response => {
+    res.status(200).send(response);
+  })
+  .catch(error => {
+    res.status(500).send(error);
+  })
+});
+
 app.delete('/Users/:user_id', (req, res) => {
   user_model.deleteUser(req.params.user_id)
   .then(response => {

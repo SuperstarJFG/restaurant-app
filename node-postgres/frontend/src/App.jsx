@@ -162,6 +162,28 @@ function App() {
       });
   }
 
+  async function getRecommendations() {
+    let username = prompt('Enter a username to get recommendations for, this can be you or a friend');
+    fetch(`http://localhost:3001/Recommendations`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({username}),
+    })
+      .then(response => {
+        return response.json();
+      })
+      .then(data => {
+        if (data.length > 0) {
+          const restaurantNames = data.map(restaurant => restaurant.business_name).join(', ');
+          alert(`Recommended restaurants: ${restaurantNames}`);
+        } else {
+          alert('No recommendations found.');
+        }
+      })
+  }
+
   useEffect(() => {
     getUser();
   }, []);
@@ -171,11 +193,15 @@ function App() {
       <br />
       <button onClick={createUser}>Sign Up</button>
       <br />
-      <button onClick={deleteUser}>Delete Account</button>
       <br />
       <button onClick={updateUser}>Update Profile</button>
       <br />
+      <button onClick={deleteUser}>Delete Account</button>
+      <br />
+      <br />
       <button onClick={addReview}>Add Review</button>
+      <br />
+      <button onClick={getRecommendations}>Get Recommendations</button>
     </div>
   );
 }

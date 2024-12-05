@@ -125,8 +125,6 @@ const updateUser = (user_id, body) => {
   });
 };
 
-
-
 const loginUser = (body) => {
   return new Promise(function (resolve, reject) {
     const { username, pass } = body;
@@ -186,6 +184,58 @@ const incrementRestaurantsVisited = (user_id) => {
   });
 };
 
+const getRecommendations = (body) => {
+  return new Promise(function (resolve, reject) {
+    const { username } = body;
+    pool.query(
+      `SELECT DISTINCT
+          BUSINESSES.BUSINESS_NAME,
+          LOCATION_X,
+          LOCATION_Y
+      FROM
+          REVIEWS
+          JOIN BUSINESSES ON BUSINESSES.BUSINESS_ID = REVIEWS.BUSINESS_ID
+      WHERE
+          USER_ID IN (
+              SELECT
+                  USER_ID
+              FROM
+                  REVIEWS
+              WHERE
+                  BUSINESS_ID IN (
+                      SELECT
+                          BUSINESS_ID
+                      FROM
+                          REVIEWS
+                      WHERE
+                          USER_ID = (
+                              SELECT
+                                  USER_ID
+                              FROM
+                                  USERS
+                              WHERE
+                                  USERNAME = $1
+                          )
+                          AND RATING >= 4
+                  )
+                  AND RATING >= 4
+          )
+          AND RATING >= 4`,
+      [username],
+      (error, results) => {
+        if (error) {
+          reject(error);
+        }
+        if (results && results.rows.length > 0) {
+          resolve(results.rows);
+        } else {
+          resolve([]);
+        }
+      }
+    );
+  });
+};
+
 module.exports = {
   getUsers,
   createUser,
@@ -195,4 +245,5 @@ module.exports = {
   getBusiness,
   addReview,
   incrementRestaurantsVisited,
+  getRecommendations,
 };
