@@ -32,6 +32,36 @@ app.post('/Users', (req, res) => {
   })
 })
 
+app.post('/Review', (req, res) => {
+  user_model.addReview(req.body)
+  .then(response => {
+    res.status(200).send(response);
+  })
+  .catch(error => {
+    res.status(500).send(error);
+  })
+})
+
+app.post('/LogIn', (req, res) => {
+  user_model.loginUser(req.body)
+  .then(response => {
+    res.status(200).send(response);
+  })
+  .catch(error => {
+    res.status(500).send(error);
+  })
+});
+
+app.post('/Business', (req, res) => {
+  user_model.getBusiness(req.body)
+  .then(response => {
+    res.status(200).send(response);
+  })
+  .catch(error => {
+    res.status(500).send(error);
+  })
+});
+
 app.delete('/Users/:user_id', (req, res) => {
   user_model.deleteUser(req.params.user_id)
   .then(response => {
@@ -55,8 +85,8 @@ app.put("/Users/:user_id", (req, res) => {
     });
 });
 
-app.post('/Reviews', (req, res) => {
-  user_model.addReview(req.body)
+app.put('/Users/:user_id/increment', (req, res) => {
+  user_model.incrementRestaurantsVisited(req.params.user_id)
   .then(response => {
     res.status(200).send(response);
   })

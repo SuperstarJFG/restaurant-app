@@ -53,6 +53,41 @@ const createUser = (body) => {
   });
 };
 
+// leave a review for a business
+const addReview = (body) => {
+  return new Promise(function (resolve, reject) {
+    const { user_id, business_id, rating, text, review_date, photo_url } = body;
+    pool.query(
+      "INSERT INTO Reviews (user_id, business_id, rating, text, review_date) VALUES ($1, $2, $3, $4, $5) RETURNING review_id",
+      [user_id, business_id, rating, text, review_date],
+      (error, results) => {
+        if (error) {
+          reject(error);
+        }
+        if (results && results.rows) {
+          const review_id = results.rows[0].review_id;
+          if (photo_url) {
+            pool.query(
+              "INSERT INTO Photos (url, review_id) VALUES ($1, $2)",
+              [photo_url, review_id],
+              (photoError, photoResults) => {
+                if (photoError) {
+                  reject(photoError);
+                }
+                resolve(`Thank you for your review!`);
+              }
+            );
+          } else {
+            resolve(`Thank you for your review!`);
+          }
+        } else {
+          reject(new Error("No results found"));
+        }
+      }
+    );
+  });
+};
+
 // delete a Users record
 const deleteUser = (user_id) => {
   return new Promise(function (resolve, reject) {
@@ -63,7 +98,7 @@ const deleteUser = (user_id) => {
         if (error) {
           reject(error);
         }
-        resolve(`User deleted with user_id: ${user_id}`);
+        resolve(`User deleted`);
       }
     );
   });
@@ -90,65 +125,74 @@ const updateUser = (user_id, body) => {
   });
 };
 
-// add a review with user inputs: username, pass, rating, text, review_date, business_name, photo url
-const addReview = (body) => {
+
+
+const loginUser = (body) => {
   return new Promise(function (resolve, reject) {
-    const { username, pass, rating, text, review_date, business_name, photo_url } = body;
-    
+    const { username, pass } = body;
     pool.query(
       "SELECT * FROM Users WHERE username = $1 AND pass = $2",
       [username, pass],
-      (error, userResults) => {
+      (error, results) => {
         if (error) {
-          return reject(error);
+          reject(error);
         }
-        if (userResults.rows.length === 0) {
-          return reject(new Error("Invalid username or password"));
+        if (results && results.rows.length > 0) {
+          resolve(`${results.rows[0].user_id}`); // return user_id
+        } else {
+          resolve("Invalid username or password");
         }
-
-        pool.query(
-          "SELECT * FROM Businesses WHERE name = $1",
-          [business_name],
-          (error, businessResults) => {
-            if (error) {
-              return reject(error);
-            }
-            if (businessResults.rows.length === 0) {
-              return reject(new Error("Business not found"));
-            }
-
-            pool.query(
-              "INSERT INTO Reviews (rating, text, review_date) VALUES ($1, $2, $3) RETURNING *",
-              [rating, text, review_date, business_name],
-              (error, reviewResults) => {
-                if (error) {
-                  return reject(error);
-                }
-
-                pool.query(
-                  "UPDATE Users SET restaurants_visited = restaurants_visited + 1 WHERE username = $1",
-                  [username],
-                  (error) => {
-                    if (error) {
-                      return reject(error);
-                    }
-                    resolve("Thank you for leaving a review!");
-                  }
-                );
-              }
-            );
-          }
-        );
       }
     );
   });
 };
 
+const getBusiness = (body) => {
+  return new Promise(function (resolve, reject) {
+    const { business_name } = body;
+    pool.query(
+      "SELECT * FROM Businesses WHERE business_name = $1",
+      [business_name],
+      (error, results) => {
+        if (error) {
+          reject(error);
+        }
+        if (results && results.rows.length > 0) {
+          resolve(`${results.rows[0].business_id}`); // return business_id
+        } else {
+          resolve("No business found");
+        }
+      }
+    );
+  });
+};
+
+const incrementRestaurantsVisited = (user_id) => {
+  return new Promise(function (resolve, reject) {
+    pool.query(
+      "UPDATE Users SET restaurants_visited = restaurants_visited + 1 WHERE user_id = $1 RETURNING *",
+      [user_id],
+      (error, results) => {
+        if (error) {
+          reject(error);
+        }
+        if (results && results.rows) {
+          resolve(`User's restaurants_visited incremented`);
+        } else {
+          reject(new Error("No results found"));
+        }
+      }
+    );
+  });
+};
 
 module.exports = {
   getUsers,
   createUser,
   deleteUser,
   updateUser,
-  addReview // Added export for addReview
+  loginUser,
+  getBusiness,
+  addReview,
+  incrementRestaurantsVisited,
 };
