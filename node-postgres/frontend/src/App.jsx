@@ -379,7 +379,7 @@ function App() {
         <div className="user-data-section">
           <h2>Recommendations for <i>{Recommendations.username}</i></h2>
           <div className="user-data-grid">
-            {true ? (
+            {Recommendations.restaurants && Array.isArray(Recommendations.restaurants) && Recommendations.restaurants.length > 0 ? (
               Recommendations.restaurants.map((restaurant, index) => (
                 <div className="user-card" key={index}>
                   <p>
@@ -403,7 +403,9 @@ function App() {
                 </div>
               ))
             ) : (
-              <p>No recommendations found. Make sure you entered a valid username of a user who gave a 5/5 to the same restaurants as some others.</p>
+              <div className="user-card">
+                <p>No recommendations found. Make sure you entered a valid username of a user who gave a 5/5 to the same restaurants as some others.</p>
+              </div>
             )}
           </div>
         </div>
