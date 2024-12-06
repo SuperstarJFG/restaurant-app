@@ -1,9 +1,34 @@
 import {useState, useEffect} from 'react';
 import "./App.css";
+import axios from 'axios';
 
 function App() {
   const [Users, setUsers] = useState([]);
   const [Recommendations, setRecommendations] = useState(null);
+
+  useEffect(() => {
+    // Define the API request options
+    const options = {
+      method: 'GET',
+      url: 'https://restaurants-near-me-usa.p.rapidapi.com/restaurants/location/state/AZ/city/Tempe/0',
+      headers: {
+        'x-rapidapi-key': '7d178f39b8msh61e1bb0dedd9cb9p121167jsn450a5063589e',
+        'x-rapidapi-host': 'restaurants-near-me-usa.p.rapidapi.com',
+      },
+    };
+
+    // Call the API
+    const fetchData = async () => {
+      try {
+        const response = await axios.request(options);
+        console.log('API Response:', response.data); // Log the JSON data
+      } catch (error) {
+        console.error('API Error:', error);
+      }
+    };
+
+    fetchData(); // Trigger the API call
+  }, []);
 
   function getUser() {
     fetch('http://localhost:3001')
