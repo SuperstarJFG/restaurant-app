@@ -1,5 +1,19 @@
 # Restaurant App
 
+## Features
+- Database of users, businesses, reviews, and review photos
+- User management
+    - Sign up
+    - Update profile
+    - Delete account
+- Add review
+- Get recommendations
+    - Find restaurants that users who like the same restuarants as you also like
+- Claim a business 
+    - Add a businesses to the database
+
+
+
 ## Setup
 1. [Install Node.js](https://nodejs.org/en/download/package-manager)
 1. Clone this repo
