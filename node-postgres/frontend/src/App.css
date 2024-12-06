@@ -40,3 +40,166 @@
 .read-the-docs {
   color: #888;
 }
+
+
+/* General Container */
+.user-app-container {
+  font-family: 'Arial', sans-serif;
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  background-color: #f8f9fa;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* Sections */
+.app-functions-section,
+.account-management-section {
+  margin: 20px 0;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.app-functions-section h3,
+.account-management-section h3 {
+  margin-bottom: 15px;
+  color: #555;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* Button Group */
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+/* Buttons */
+.btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+/* Specific Button Styles */
+.btn-signup {
+  background-color: #4caf50;
+  color: white;
+}
+.btn-update {
+  background-color: #2196f3;
+  color: white;
+}
+.btn-delete {
+  background-color: #f44336;
+  color: white;
+}
+.btn-add-review {
+  background-color: #ff9800;
+  color: white;
+}
+.btn-recommendations {
+  background-color: #9c27b0;
+  color: white;
+}
+
+/* Button Interaction */
+.btn:active {
+  transform: scale(0.95);
+}
+
+/* User Data Section */
+.user-data-section {
+  /* max-width: 600px; */
+  margin: 20px auto;
+  padding: 20px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.user-data-section h3 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.user-data {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.user-card {
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.user-card p {
+  margin: 5px 0;
+  color: #555;
+}
+
+
+/* User Data Grid Section */
+.user-data-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Three equal-width columns */
+  gap: 20px; /* Spacing between grid items */
+  margin: 20px auto; /* Center grid within the container */
+  max-width: 100%; /* Take up full screen width */
+  padding: 10px; /* Add some padding around the grid */
+}
+
+/* User Card Styling */
+.user-card {
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  text-align: left;
+}
+
+.user-card p {
+  margin: 5px 0;
+  color: #555;
+}
+
+
+.recommendations-section {
+  margin: 20px 0;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  text-align: center;
+}
+
+.recommendations-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.recommendations-section li {
+  margin: 5px 0;
+}

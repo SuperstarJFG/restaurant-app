@@ -1,17 +1,21 @@
 import {useState, useEffect} from 'react';
+import "./App.css";
 
 function App() {
-  const [Users, setUsers] = useState(false);
+  const [Users, setUsers] = useState([]);
+  const [Recommendations, setRecommendations] = useState(null);
 
   function getUser() {
     fetch('http://localhost:3001')
-      .then(response => {
-        return response.text();
-      })
+      .then(response => response.json()) // Parse JSON response
       .then(data => {
-        setUsers(data);
+        setUsers(data); // Set parsed data to Users
+      })
+      .catch(error => {
+        console.error('Error fetching users:', error);
+        setUsers([]); // Default to empty array on error
       });
-  }
+  }  
 
   function createUser() {
     let email = prompt('Enter email');
@@ -169,40 +173,103 @@ function App() {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({username}),
+      body: JSON.stringify({ username }),
     })
-      .then(response => {
-        return response.json();
-      })
+      .then(response => response.json())
       .then(data => {
         if (data.length > 0) {
-          const restaurantNames = data.map(restaurant => restaurant.business_name).join(', ');
-          alert(`Recommended restaurants: ${restaurantNames}`);
+          setRecommendations({ username, restaurants: data }); // Save the recommendations
         } else {
-          alert('No recommendations found.');
+          setRecommendations({ username, restaurants: [] }); // No recommendations
         }
       })
-  }
+      .catch(error => console.error('Error fetching recommendations:', error));
+  }  
 
   useEffect(() => {
     getUser();
   }, []);
   return (
     <div>
-      {Users ? Users : 'There is no User data available'}
-      <br />
-      <button onClick={createUser}>Sign Up</button>
-      <br />
-      <br />
-      <button onClick={updateUser}>Update Profile</button>
-      <br />
-      <button onClick={deleteUser}>Delete Account</button>
-      <br />
-      <br />
-      <button onClick={addReview}>Add Review</button>
-      <br />
-      <button onClick={getRecommendations}>Get Recommendations</button>
+      {/* Main Container */}
+      <div className="user-app-container">
+        {/* App Functions Section */}
+        <div className="app-functions-section">
+          <h3>App Functions</h3>
+          <div className="button-group">
+            <button className="btn btn-add-review" onClick={addReview}>
+              Add Review
+            </button>
+            <button className="btn btn-recommendations" onClick={getRecommendations}>
+              Get Recommendations
+            </button>
+          </div>
+        </div>
+  
+        {/* Account Management Section */}
+        <div className="account-management-section">
+          <h3>Account Management</h3>
+          <div className="button-group">
+            <button className="btn btn-signup" onClick={createUser}>
+              Sign Up
+            </button>
+            <button className="btn btn-update" onClick={updateUser}>
+              Update Profile
+            </button>
+            <button className="btn btn-delete" onClick={deleteUser}>
+              Delete Account
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Reccomendations Section */}
+      {Recommendations && (
+        <div className="recommendations-section">
+          <h3>Recommendations for {Recommendations.username}</h3>
+          {Recommendations.restaurants.length > 0 ? (
+            <ul>
+              {Recommendations.restaurants.map((restaurant, index) => (
+                <li key={index}>{restaurant.business_name}</li>
+              ))}
+            </ul>
+          ) : (
+            <p>No recommendations found.</p>
+          )}
+        </div>
+      )}
+  
+      {/* User Data Section */}
+      <div className="user-data-section">
+        <h3>Existing Users</h3>
+        <div className="user-data-grid">
+          {Users && Array.isArray(Users) && Users.length > 0 ? (
+            Users.map((user, index) => (
+              <div className="user-card" key={index}>
+                <p>
+                  <strong>Username:</strong> {user.username}
+                </p>
+                <p>
+                  <strong>Email:</strong> {user.email}
+                </p>
+                <p>
+                  <strong>Password:</strong> {user.pass}
+                </p>
+                <p>
+                  <strong>Location:</strong> ({user.location_x}, {user.location_y})
+                </p>
+                <p>
+                  <strong>Restaurants Visited:</strong> {user.restaurants_visited}
+                </p>
+              </div>
+            ))
+          ) : (
+            <p>No user data available.</p>
+          )}
+        </div>
+      </div>
     </div>
   );
+  
 }
 export default App;
