@@ -66,8 +66,8 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
-.app-functions-section h3,
-.account-management-section h3 {
+.app-functions-section h2,
+.account-management-section h2 {
   margin-bottom: 15px;
   color: #555;
   font-size: 18px;
@@ -134,9 +134,9 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.user-data-section h3 {
+.user-data-section h2 {
   text-align: center;
-  color: #333;
+  color: #555;
   margin-bottom: 15px;
 }
 
@@ -193,6 +193,8 @@
   border-radius: 8px;
   background-color: #f9f9f9;
   text-align: center;
+
+  color: #555;
 }
 
 .recommendations-section ul {

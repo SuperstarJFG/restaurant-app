@@ -3,31 +3,44 @@ import "./App.css";
 import axios from 'axios';
 
 function App() {
+  const debugMode = true;
+
   const [Users, setUsers] = useState([]);
+  const [Restaurants, setRestaurants] = useState([]);
   const [Recommendations, setRecommendations] = useState(null);
 
   useEffect(() => {
-    // Define the API request options
-    const options = {
-      method: 'GET',
-      url: 'https://restaurants-near-me-usa.p.rapidapi.com/restaurants/location/state/AZ/city/Tempe/0',
-      headers: {
-        'x-rapidapi-key': '7d178f39b8msh61e1bb0dedd9cb9p121167jsn450a5063589e',
-        'x-rapidapi-host': 'restaurants-near-me-usa.p.rapidapi.com',
-      },
-    };
+    // One time use to insert restaurants into the database:
 
-    // Call the API
-    const fetchData = async () => {
-      try {
-        const response = await axios.request(options);
-        console.log('API Response:', response.data); // Log the JSON data
-      } catch (error) {
-        console.error('API Error:', error);
-      }
-    };
+    // let page = 0;
+    // while (page < 25) {
+    //   // Define the API request options
+    //   const options = {
+    //     method: 'GET',
+    //     url: `https://restaurants-near-me-usa.p.rapidapi.com/restaurants/location/state/AZ/city/Tempe/${page}`,
+    //     headers: {
+    //       'x-rapidapi-key': '7d178f39b8msh61e1bb0dedd9cb9p121167jsn450a5063589e',
+    //       'x-rapidapi-host': 'restaurants-near-me-usa.p.rapidapi.com',
+    //     },
+    //   };
 
-    fetchData(); // Trigger the API call
+    //   // Call the API
+    //   const fetchData = async () => {
+    //     try {
+    //       const response = await axios.request(options);
+    //       console.log('API Response:', response.data); // Log the JSON data
+    //     } catch (error) {
+    //       console.error('API Error:', error);
+    //     }
+    //   };
+
+    //   fetchData(); // Trigger the API call
+
+    //   page++;
+    // }
+
+    getUser();
+    getRestaurants();
   }, []);
 
   function getUser() {
@@ -40,7 +53,36 @@ function App() {
         console.error('Error fetching users:', error);
         setUsers([]); // Default to empty array on error
       });
-  }  
+  }
+
+  function getRestaurants() {
+    fetch('http://localhost:3001/Restaurants')
+      .then(response => response.json()) // Parse JSON response
+      .then(data => {
+        setRestaurants(data); // Set parsed data to Restaurants
+      })
+      .catch(error => {
+        console.error('Error fetching restaurants:', error);
+        setRestaurants([]); // Default to empty array on error
+      });
+  }
+
+  function insertRestaurants(restaurants) {
+    fetch('http://localhost:3001/Restaurants', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(restaurants),
+    })
+      .then(response => {
+        return response.text();
+      })
+      .then(data => {
+        console.log(data);
+      });
+    
+  }
 
   function createUser() {
     let email = prompt('Enter email');
@@ -211,16 +253,21 @@ function App() {
       .catch(error => console.error('Error fetching recommendations:', error));
   }  
 
-  useEffect(() => {
-    getUser();
-  }, []);
   return (
     <div>
+      <h1>Tempe Restaurant App</h1>
+      { /* Debug Mode */ }
+      {debugMode ? (
+        <div className="debug-mode">
+          <h2>Debug Mode</h2>
+          <p>Debug mode is enabled. To disable, set <code>debugMode</code> to <code>false</code> in the <code>App.jsx</code> file.</p>
+        </div>
+      ) : null}
       {/* Main Container */}
       <div className="user-app-container">
         {/* App Functions Section */}
         <div className="app-functions-section">
-          <h3>App Functions</h3>
+          <h2>App Functions</h2>
           <div className="button-group">
             <button className="btn btn-add-review" onClick={addReview}>
               Add Review
@@ -233,7 +280,7 @@ function App() {
   
         {/* Account Management Section */}
         <div className="account-management-section">
-          <h3>Account Management</h3>
+          <h2>Account Management</h2>
           <div className="button-group">
             <button className="btn btn-signup" onClick={createUser}>
               Sign Up
@@ -248,10 +295,10 @@ function App() {
         </div>
       </div>
 
-      {/* Reccomendations Section */}
+      {/* Recommendations Section */}
       {Recommendations && (
         <div className="recommendations-section">
-          <h3>Recommendations for {Recommendations.username}</h3>
+          <h2>Recommendations for <i>{Recommendations.username}</i></h2>
           {Recommendations.restaurants.length > 0 ? (
             <ul>
               {Recommendations.restaurants.map((restaurant, index) => (
@@ -259,37 +306,72 @@ function App() {
               ))}
             </ul>
           ) : (
-            <p>No recommendations found.</p>
+            <p>No recommendations found. Make sure you entered a valid username of a user who likes the same restaurants as some others.</p>
           )}
         </div>
       )}
   
       {/* User Data Section */}
+      {debugMode ? (
+        <div className="user-data-section">
+          <h2>Existing Users</h2>
+          <div className="user-data-grid">
+            {Users && Array.isArray(Users) && Users.length > 0 ? (
+              Users.map((user, index) => (
+                <div className="user-card" key={index}>
+                  <p>
+                    <strong>Username:</strong> {user.username}
+                  </p>
+                  <p>
+                    <strong>Email:</strong> {user.email}
+                  </p>
+                  <p>
+                    <strong>Password:</strong> {user.pass}
+                  </p>
+                  <p>
+                    <strong>Location:</strong> ({user.location_x}, {user.location_y})
+                  </p>
+                  <p>
+                    <strong>Restaurants Visited:</strong> {user.restaurants_visited}
+                  </p>
+                </div>
+              ))
+            ) : (
+              <p>No user data available.</p>
+            )}
+          </div>
+        </div> 
+      ) : null}
+
+      {/* Restaurant Data Section */}
       <div className="user-data-section">
-        <h3>Existing Users</h3>
+        <h2>Tempe Restaurant Directory</h2>
         <div className="user-data-grid">
-          {Users && Array.isArray(Users) && Users.length > 0 ? (
-            Users.map((user, index) => (
+          {Restaurants && Array.isArray(Restaurants) && Restaurants.length > 0 ? (
+            Restaurants.map((restaurant, index) => (
               <div className="user-card" key={index}>
                 <p>
-                  <strong>Username:</strong> {user.username}
+                  <b>
+                    {restaurant.website ? (
+                      <a href={restaurant.website}>{restaurant.business_name}</a>
+                    ) : (
+                      restaurant.business_name
+                    )}
+                  </b>
                 </p>
                 <p>
-                  <strong>Email:</strong> {user.email}
+                  <i> {restaurant.category} </i>
                 </p>
                 <p>
-                  <strong>Password:</strong> {user.pass}
+                  {restaurant.hours}
                 </p>
                 <p>
-                  <strong>Location:</strong> ({user.location_x}, {user.location_y})
-                </p>
-                <p>
-                  <strong>Restaurants Visited:</strong> {user.restaurants_visited}
+                  {restaurant.address}
                 </p>
               </div>
             ))
           ) : (
-            <p>No user data available.</p>
+            <p>No restaurant data available.</p>
           )}
         </div>
       </div>

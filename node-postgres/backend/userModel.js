@@ -29,6 +29,27 @@ const getUsers = async () => {
   }
 };
 
+// get all Businesses in our database
+const getRestaurants = async () => {
+  try {
+    return await new Promise(function (resolve, reject) {
+      pool.query("SELECT * FROM Businesses ORDER BY business_name", (error, results) => {
+        if (error) {
+          reject(error);
+        }
+        if (results && results.rows) {
+          resolve(results.rows);
+        } else {
+          reject(new Error("No results found"));
+        }
+      });
+    });
+  } catch (error_1) {
+    console.error(error_1);
+    throw new Error("Internal server error");
+  }
+};
+
 // create a new Users record in the databsse
 const createUser = (body) => {
   return new Promise(function (resolve, reject) {
@@ -51,6 +72,45 @@ const createUser = (body) => {
       }
     );
   });
+};
+
+const insertRestaurants = (body) => {
+  console.log(body);
+  return new Promise(function (resolve, reject) {
+    const { restaurantName, address, website, latitude, longitude, hoursInterval, cuisineType } = body;
+    pool.query(
+      "INSERT INTO Businesses (business_name, address, website, location_x, location_y, hours, category) VALUES ($1, $2, $3, $4, $5, $6::varchar(100), $7::varchar(50)) RETURNING *",
+      [restaurantName, address, website, parseFloat(latitude), parseFloat(longitude), hoursInterval, cuisineType],
+      (error, results) => {
+        if (error) {
+          reject(error);
+        }
+        if (results && results.rows) {
+          resolve(
+            // `A new merchant has been added: ${JSON.stringify(results.rows[0])}`
+            `Welcome ${restaurantName}!`
+          );
+        } else {
+          reject(new Error("No results found"));
+        }
+      }
+    );
+  });
+};
+
+const insertMultipleRestaurants = async (data) => {
+  const { restaurants } = data;
+  for (const restaurant of restaurants) {
+    await insertRestaurants({
+      restaurantName: restaurant.restaurantName,
+      address: restaurant.address,
+      website: restaurant.website,
+      latitude: restaurant.latitude,
+      longitude: restaurant.longitude,
+      hoursInterval: restaurant.hoursInterval,
+      cuisineType: restaurant.cuisineType,
+    });
+  }
 };
 
 // leave a review for a business
@@ -246,4 +306,7 @@ module.exports = {
   addReview,
   incrementRestaurantsVisited,
   getRecommendations,
+  insertRestaurants,
+  insertMultipleRestaurants,
+  getRestaurants,
 };

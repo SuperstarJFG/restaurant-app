@@ -22,8 +22,28 @@ app.get('/', (req, res) => {
   })
 })
 
+app.get('/Restaurants', (req, res) => {
+  user_model.getRestaurants()
+  .then(response => {
+    res.status(200).send(response);
+  })
+  .catch(error => {
+    res.status(500).send(error);
+  })
+})
+
 app.post('/Users', (req, res) => {
   user_model.createUser(req.body)
+  .then(response => {
+    res.status(200).send(response);
+  })
+  .catch(error => {
+    res.status(500).send(error);
+  })
+})
+
+app.post('/Restaurants', (req, res) => {
+  user_model.insertMultipleRestaurants(req.body)
   .then(response => {
     res.status(200).send(response);
   })
