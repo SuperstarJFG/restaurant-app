@@ -8,7 +8,7 @@
     - Delete account
 - Add review
 - Get recommendations
-    - Find restaurants that users who like the same restuarants as you also like
+    - Enter a username (yourself or a friend), to find restaurants that users who like the same restaurants as them also like
 - Claim a business 
     - Add a businesses to the database
 
