@@ -72,6 +72,16 @@ app.post('/LogIn', (req, res) => {
   })
 });
 
+app.post('/ClaimBusiness', (req, res) => {
+  user_model.claimBusiness(req.body)
+  .then(response => {
+    res.status(200).send(response);
+  })
+  .catch(error => {
+    res.status(500).send(error);
+  })
+});
+
 app.post('/Business', (req, res) => {
   user_model.getBusiness(req.body)
   .then(response => {

@@ -106,6 +106,28 @@ function App() {
       });
   }
 
+  async function claimBusiness() {
+    const user_id = await loginUser();
+    if (!user_id) {return;}
+
+    const business_id = await getBusiness();
+    if (!business_id) {return;}
+
+    fetch('http://localhost:3001/ClaimBusiness', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({user_id, business_id}),
+    })
+      .then(response => {
+        return response.text();
+      })
+      .then(data => {
+        alert(data);
+      });
+  }
+
   async function addReview() {
     const user_id = await loginUser();
     if (!user_id) {return;}
@@ -291,6 +313,9 @@ function App() {
             <button className="btn btn-delete" onClick={deleteUser}>
               Delete Account
             </button>
+            <button className="btn btn-claim" onClick={claimBusiness}>
+              Claim Business
+            </button>
           </div>
         </div>
       </div>
@@ -368,6 +393,13 @@ function App() {
                 <p>
                   {restaurant.address}
                 </p>
+                <i>
+                  {restaurant.owner_id ? (
+                    <p>Claimed by owner</p>
+                  ) : (
+                    <p>Unclaimed</p>
+                  )}
+                </i>
               </div>
             ))
           ) : (

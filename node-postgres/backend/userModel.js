@@ -185,6 +185,26 @@ const updateUser = (user_id, body) => {
   });
 };
 
+const claimBusiness = (body) => {
+  return new Promise(function (resolve, reject) {
+    const { user_id, business_id } = body;
+    pool.query(
+      "UPDATE Businesses SET owner_id = $1 WHERE business_id = $2 RETURNING *",
+      [user_id, business_id],
+      (error, results) => {
+        if (error) {
+          reject(error);
+        }
+        if (results && results.rows) {
+          resolve(`Business claimed: ${results.rows[0].business_name}`);
+        } else {
+          reject(new Error("No results found"));
+        }
+      }
+    );
+  });
+};
+
 const loginUser = (body) => {
   return new Promise(function (resolve, reject) {
     const { username, pass } = body;
@@ -309,4 +329,5 @@ module.exports = {
   insertRestaurants,
   insertMultipleRestaurants,
   getRestaurants,
+  claimBusiness,
 };
