@@ -3,13 +3,14 @@
 ## Features
 - Database of users, restaurants, reviews, and review photos
     - Restaurant data from [restaurants-near-me-usa.p.rapidapi.com](restaurants-near-me-usa.p.rapidapi.com)
-- User management
-    - Sign up
-    - Update profile
-    - Delete account
 - Add review
 - Get recommendations
     - Enter a username (yourself or a friend), to find restaurants that users who like the same restaurants as them also like
+- Account management
+    - Sign up
+    - Update your profile
+    - Delete your account
+    - Claim a business 
 
 ## Setup
 1. [Install Node.js](https://nodejs.org/en/download/package-manager)

@@ -11,37 +11,88 @@ function App() {
 
   useEffect(() => {
     // One time use to insert restaurants into the database:
+    // fetchRestaurants();
 
-    // let page = 0;
-    // while (page < 25) {
-    //   // Define the API request options
-    //   const options = {
-    //     method: 'GET',
-    //     url: `https://restaurants-near-me-usa.p.rapidapi.com/restaurants/location/state/AZ/city/Tempe/${page}`,
-    //     headers: {
-    //       'x-rapidapi-key': '7d178f39b8msh61e1bb0dedd9cb9p121167jsn450a5063589e',
-    //       'x-rapidapi-host': 'restaurants-near-me-usa.p.rapidapi.com',
-    //     },
-    //   };
-
-    //   // Call the API
-    //   const fetchData = async () => {
-    //     try {
-    //       const response = await axios.request(options);
-    //       console.log('API Response:', response.data); // Log the JSON data
-    //     } catch (error) {
-    //       console.error('API Error:', error);
-    //     }
-    //   };
-
-    //   fetchData(); // Trigger the API call
-
-    //   page++;
-    // }
+    // One time use to insert reviews into the database:
+    // insertReviews();
 
     getUser();
     getRestaurants();
   }, []);
+
+  function fetchRestaurants() {
+    let page = 0;
+    while (page < 25) {
+      // Define the API request options
+      const options = {
+        method: 'GET',
+        url: `https://restaurants-near-me-usa.p.rapidapi.com/restaurants/location/state/AZ/city/Tempe/${page}`,
+        headers: {
+          'x-rapidapi-key': '7d178f39b8msh61e1bb0dedd9cb9p121167jsn450a5063589e',
+          'x-rapidapi-host': 'restaurants-near-me-usa.p.rapidapi.com',
+        },
+      };
+
+      // Call the API
+      const fetchData = async () => {
+        try {
+          const response = await axios.request(options);
+          console.log('API Response:', response.data); // Log the JSON data
+          insertRestaurants(response.data); // Insert the data into the database
+        } catch (error) {
+          console.error('API Error:', error);
+        }
+      };
+
+      fetchData(); // Trigger the API call
+
+      page++;
+    }
+  }
+
+  function insertReviews() {
+    for (let i = 0; i < 200; i++) {
+      let user_id = 15 + i % 3;
+      let business_id = 95 + i % 185;
+      let rating = Math.ceil(Math.random() * 5);
+      let text;
+      let photo_url;
+      let review_date = new Date().toISOString();
+      switch (rating) {
+        case 1:
+          text = 'Oh brother, this place stinks!';
+          break;
+        case 2:
+          text = 'really not great, i did not enjoy the service';
+          break;
+        case 3:
+          text = 'it\'s like okay i guess';
+          break;
+        case 4:
+          text = 'This place is pretty good.';
+          break;
+        case 5:
+          text = 'Outstanding, amazing even!';
+          photo_url = 'https://upload.wikimedia.org/wikipedia/commons/8/85/Smiley.svg';
+          break;
+      }
+
+      fetch('http://localhost:3001/Review', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({user_id, business_id, rating, text, review_date, photo_url}),
+      })
+        .then(response => {
+          return response.text();
+        })
+        .then(data => {
+          // alert(data);
+          incrementRestaurantsVisited(user_id); // Increment restaurants_visited
+        });
+    }
+  }
 
   function getUser() {
     fetch('http://localhost:3001')
@@ -310,6 +361,9 @@ function App() {
             <button className="btn btn-update" onClick={updateUser}>
               Update Profile
             </button>
+          </div>
+          <br/>
+          <div className="button-group">
             <button className="btn btn-delete" onClick={deleteUser}>
               Delete Account
             </button>
@@ -322,17 +376,36 @@ function App() {
 
       {/* Recommendations Section */}
       {Recommendations && (
-        <div className="recommendations-section">
+        <div className="user-data-section">
           <h2>Recommendations for <i>{Recommendations.username}</i></h2>
-          {Recommendations.restaurants.length > 0 ? (
-            <ul>
-              {Recommendations.restaurants.map((restaurant, index) => (
-                <li key={index}>{restaurant.business_name}</li>
-              ))}
-            </ul>
-          ) : (
-            <p>No recommendations found. Make sure you entered a valid username of a user who likes the same restaurants as some others.</p>
-          )}
+          <div className="user-data-grid">
+            {true ? (
+              Recommendations.restaurants.map((restaurant, index) => (
+                <div className="user-card" key={index}>
+                  <p>
+                    <b>
+                      {restaurant.website ? (
+                        <a href={restaurant.website}>{restaurant.business_name}</a>
+                      ) : (
+                        restaurant.business_name
+                      )}
+                    </b>
+                  </p>
+                  <p>
+                    <i> {restaurant.category} </i>
+                  </p>
+                  <p>
+                    {restaurant.hours}
+                  </p>
+                  <p>
+                    {restaurant.address}
+                  </p>
+                </div>
+              ))
+            ) : (
+              <p>No recommendations found. Make sure you entered a valid username of a user who gave a 5/5 to the same restaurants as some others.</p>
+            )}
+          </div>
         </div>
       )}
   

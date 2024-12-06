@@ -176,7 +176,7 @@ const updateUser = (user_id, body) => {
           reject(error);
         }
         if (results && results.rows) {
-          resolve(`User updated: ${JSON.stringify(results.rows[0])}`);
+          resolve(`User updated: ${results.rows[0].username}`);
         } else {
           reject(new Error("No results found"));
         }
@@ -268,41 +268,51 @@ const getRecommendations = (body) => {
   return new Promise(function (resolve, reject) {
     const { username } = body;
     pool.query(
-      `SELECT DISTINCT
-          BUSINESSES.BUSINESS_NAME,
-          LOCATION_X,
-          LOCATION_Y
-      FROM
-          REVIEWS
-          JOIN BUSINESSES ON BUSINESSES.BUSINESS_ID = REVIEWS.BUSINESS_ID
-      WHERE
-          USER_ID IN (
-              SELECT
-                  USER_ID
-              FROM
-                  REVIEWS
-              WHERE
-                  BUSINESS_ID IN (
-                      SELECT
-                          BUSINESS_ID
-                      FROM
-                          REVIEWS
-                      WHERE
-                          USER_ID = (
-                              SELECT
-                                  USER_ID
-                              FROM
-                                  USERS
-                              WHERE
-                                  USERNAME = $1
-                          )
-                          AND RATING >= 4
-                  )
-                  AND RATING >= 4
-          )
-          AND RATING >= 4`,
+      `SELECT * FROM (
+          SELECT
+              BUSINESSES.BUSINESS_NAME,
+              BUSINESSES.WEBSITE,
+              BUSINESSES.CATEGORY,
+              BUSINESSES.HOURS,
+              BUSINESSES.ADDRESS
+          FROM
+              REVIEWS
+              JOIN BUSINESSES ON BUSINESSES.BUSINESS_ID = REVIEWS.BUSINESS_ID
+          WHERE
+              USER_ID IN (
+                  SELECT
+                      USER_ID
+                  FROM
+                      REVIEWS
+                  WHERE
+                      BUSINESS_ID IN (
+                          SELECT
+                              BUSINESS_ID
+                          FROM
+                              REVIEWS
+                          WHERE
+                              USER_ID = (
+                                  SELECT
+                                      USER_ID
+                                  FROM
+                                      USERS
+                                  WHERE
+                                      USERNAME = $1
+                              )
+                              AND RATING >= 5
+                      )
+                      AND RATING >= 5
+              )
+              AND RATING >= 5
+      ) AS RECOMMENDATIONS
+      ORDER BY
+          RANDOM()
+      LIMIT
+          9`,
       [username],
       (error, results) => {
+        console.log(results);
+        console.log(error);
         if (error) {
           reject(error);
         }
