@@ -32,9 +32,8 @@
 ### Backend
 - The backend is a server that interacts with the remote database.
 - `restaurant-app/node-postgress/backend/userModel.js` and `restaurant-app/node-postgress/backend/index.js` have functions that can interact with the database.
-    - Use `insertMultipleRestaurants(data)` to add multiple businesses from a JSON file.
-- http://localhost:3001/ opens the backend in your browser, which currently shows the list of Users.
+- http://localhost:3001/ opens the backend in your browser, which should show the list of Users.
 - To reload the backend after making changes, go to your backend terminal that shows `App running on port 3001` and `Ctrl+C`, `Up Arrow`, `Enter`.
 ### Frontend
-- `restaurant-app/node-postgress/frontend/src/App.jsx` is the frontend app that calls the backend  functions.
+- `restaurant-app/node-postgress/frontend/src/App.jsx` is the frontend app that calls the backend functions.
 - To reload the frontend after making changes, go to your frontend `VITE` terminal and `Ctrl+C`, `Up Arrow`, `Enter`
