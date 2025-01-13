@@ -2,7 +2,7 @@
 
 ## Features
 - Database of users, restaurants, reviews, and review photos
-    - Restaurant data from [restaurants-near-me-usa.p.rapidapi.com](restaurants-near-me-usa.p.rapidapi.com)
+    - Restaurant data from [restaurants-near-me-usa.p.rapidapi.com](http://restaurants-near-me-usa.p.rapidapi.com)
 - Add review
 - Get recommendations
     - Enter a username (yourself or a friend), to find restaurants that users who like the same restaurants as them also like
