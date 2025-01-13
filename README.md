@@ -1,4 +1,5 @@
 # Restaurant App
+![Screenshot of app](Screenshot.png) 
 
 ## Features
 - Database of users, restaurants, reviews, and review photos
