@@ -3,7 +3,7 @@ import "./App.css";
 import axios from 'axios';
 
 function App() {
-  const debugMode = true;
+  const debugMode = false;
 
   const [Users, setUsers] = useState([]);
   const [Restaurants, setRestaurants] = useState([]);
@@ -77,7 +77,7 @@ function App() {
           break;
       }
 
-      fetch('http://localhost:3001/Review', {
+      fetch('https://restaurant-api.gresh.dev/Review', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -95,7 +95,7 @@ function App() {
   }
 
   function getUser() {
-    fetch('http://localhost:3001')
+    fetch('https://restaurant-api.gresh.dev')
       .then(response => response.json()) // Parse JSON response
       .then(data => {
         setUsers(data); // Set parsed data to Users
@@ -107,7 +107,7 @@ function App() {
   }
 
   function getRestaurants() {
-    fetch('http://localhost:3001/Restaurants')
+    fetch('https://restaurant-api.gresh.dev/Restaurants')
       .then(response => response.json()) // Parse JSON response
       .then(data => {
         setRestaurants(data); // Set parsed data to Restaurants
@@ -119,7 +119,7 @@ function App() {
   }
 
   function insertRestaurants(restaurants) {
-    fetch('http://localhost:3001/Restaurants', {
+    fetch('https://restaurant-api.gresh.dev/Restaurants', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -141,7 +141,7 @@ function App() {
     let location_y = prompt('Enter your location\'s y coordinate');
     let username = prompt('Enter username');
     let pass = prompt('Enter password');
-    fetch('http://localhost:3001/Users', {
+    fetch('https://restaurant-api.gresh.dev/Users', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -164,7 +164,7 @@ function App() {
     const business_id = await getBusiness();
     if (!business_id) {return;}
 
-    fetch('http://localhost:3001/ClaimBusiness', {
+    fetch('https://restaurant-api.gresh.dev/ClaimBusiness', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -193,7 +193,7 @@ function App() {
     let text = prompt('Enter review');
     let review_date = new Date().toISOString();
     let photo_url = prompt('Enter a URL for a photo to add to your review');
-    fetch('http://localhost:3001/Review', {
+    fetch('https://restaurant-api.gresh.dev/Review', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -210,7 +210,7 @@ function App() {
   }
 
   function incrementRestaurantsVisited(user_id) {
-    fetch(`http://localhost:3001/Users/${user_id}/increment`, {
+    fetch(`https://restaurant-api.gresh.dev/Users/${user_id}/increment`, {
       method: 'PUT',
     })
       .then(response => {
@@ -226,7 +226,7 @@ function App() {
     const user_id = await loginUser();
     if (!user_id) {return;}
 
-    fetch(`http://localhost:3001/Users/${user_id}`, {
+    fetch(`https://restaurant-api.gresh.dev/Users/${user_id}`, {
       method: 'DELETE',
     })
       .then(response => {
@@ -244,7 +244,7 @@ function App() {
 
     let username = prompt('Enter new username');
     let email = prompt('Enter new email');
-    fetch(`http://localhost:3001/Users/${user_id}`, {
+    fetch(`https://restaurant-api.gresh.dev/Users/${user_id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -263,7 +263,7 @@ function App() {
   async function loginUser() {
     let username = prompt('Enter username');
     let pass = prompt('Enter password');
-    return fetch('http://localhost:3001/LogIn', {
+    return fetch('https://restaurant-api.gresh.dev/LogIn', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -286,7 +286,7 @@ function App() {
 
   async function getBusiness() {
     let business_name = prompt('Enter business name');
-    return fetch('http://localhost:3001/Business', {
+    return fetch('https://restaurant-api.gresh.dev/Business', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -308,7 +308,7 @@ function App() {
 
   async function getRecommendations() {
     let username = prompt('Enter a username to get recommendations for, this can be you or a friend');
-    fetch(`http://localhost:3001/Recommendations`, {
+    fetch(`https://restaurant-api.gresh.dev/Recommendations`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
