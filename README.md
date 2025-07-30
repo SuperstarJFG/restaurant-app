@@ -26,7 +26,7 @@ The app is available at [restaurant.gresh.dev](https://restaurant.gresh.dev), it
     - `restaurant-app/node-postgress/backend/userModel.js` and `restaurant-app/node-postgress/backend/index.js` have functions that can interact with the database
     - http://localhost:3001/ opens the backend in your browser, which should show the list of Users
     - To reload the backend after making changes, go to your backend terminal that shows `App running on port 3001` and `Ctrl+C`, `Up Arrow`, `Enter`
-    - If the frontent isn't being run locally, update the line `res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');` in `index.js`
+    - If the frontend isn't being run on localhost, update the line `res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');` in `index.js`
 1. Open another terminal to `restaurant-app/node-postgress/frontend` and run:
     ```
     npm i
